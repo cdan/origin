@@ -314,6 +314,7 @@ items:
     - resourceaccessreviews
     - selfsubjectrulesreviews
     - subjectaccessreviews
+    - subjectrulesreviews
     verbs:
     - create
   - apiGroups:
@@ -327,7 +328,17 @@ items:
     - ""
     attributeRestrictions: null
     resources:
+    - podsecuritypolicyreviews
+    - podsecuritypolicyselfsubjectreviews
+    - podsecuritypolicysubjectreviews
+    verbs:
+    - create
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
     - nodes/metrics
+    - nodes/spec
     verbs:
     - get
   - apiGroups:
@@ -415,6 +426,50 @@ items:
     - builds/jenkinspipeline
     verbs:
     - create
+- apiVersion: v1
+  kind: ClusterRole
+  metadata:
+    creationTimestamp: null
+    name: storage-admin
+  rules:
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
+    - persistentvolumes
+    verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
+    - storage.k8s.io
+    attributeRestrictions: null
+    resources:
+    - storageclasses
+    verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
+    - events
+    - persistentvolumeclaims
+    verbs:
+    - get
+    - list
+    - watch
 - apiVersion: v1
   kind: ClusterRole
   metadata:
@@ -520,6 +575,7 @@ items:
     attributeRestrictions: null
     resources:
     - deployments
+    - deployments/rollback
     - deployments/scale
     - horizontalpodautoscalers
     - jobs
@@ -579,6 +635,16 @@ items:
     resources:
     - localresourceaccessreviews
     - localsubjectaccessreviews
+    - subjectrulesreviews
+    verbs:
+    - create
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
+    - podsecuritypolicyreviews
+    - podsecuritypolicyselfsubjectreviews
+    - podsecuritypolicysubjectreviews
     verbs:
     - create
   - apiGroups:
@@ -638,9 +704,7 @@ items:
     - ""
     attributeRestrictions: null
     resources:
-    - deploymentconfigrollbacks
     - deploymentconfigs
-    - deploymentconfigs/rollback
     - deploymentconfigs/scale
     - generatedeploymentconfigs
     verbs:
@@ -652,6 +716,15 @@ items:
     - patch
     - update
     - watch
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
+    - deploymentconfigrollbacks
+    - deploymentconfigs/instantiate
+    - deploymentconfigs/rollback
+    verbs:
+    - create
   - apiGroups:
     - ""
     attributeRestrictions: null
@@ -905,6 +978,7 @@ items:
     attributeRestrictions: null
     resources:
     - deployments
+    - deployments/rollback
     - deployments/scale
     - horizontalpodautoscalers
     - jobs
@@ -989,9 +1063,7 @@ items:
     - ""
     attributeRestrictions: null
     resources:
-    - deploymentconfigrollbacks
     - deploymentconfigs
-    - deploymentconfigs/rollback
     - deploymentconfigs/scale
     - generatedeploymentconfigs
     verbs:
@@ -1003,6 +1075,15 @@ items:
     - patch
     - update
     - watch
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
+    - deploymentconfigrollbacks
+    - deploymentconfigs/instantiate
+    - deploymentconfigs/rollback
+    verbs:
+    - create
   - apiGroups:
     - ""
     attributeRestrictions: null
@@ -1385,6 +1466,13 @@ items:
     - get
     - list
   - apiGroups:
+    - storage.k8s.io
+    attributeRestrictions: null
+    resources:
+    - storageclasses
+    verbs:
+    - list
+  - apiGroups:
     - ""
     attributeRestrictions: null
     resources:
@@ -1462,6 +1550,8 @@ items:
   - apiGroups: null
     attributeRestrictions: null
     nonResourceURLs:
+    - /.well-known
+    - /.well-known/*
     - /api
     - /api/*
     - /apis
@@ -1671,6 +1761,7 @@ items:
     - events
     verbs:
     - create
+    - list
   - apiGroups:
     - ""
     attributeRestrictions: null
@@ -1839,6 +1930,7 @@ items:
     - nodes/log
     - nodes/metrics
     - nodes/proxy
+    - nodes/spec
     - nodes/stats
     verbs:
     - '*'
@@ -1862,6 +1954,7 @@ items:
     attributeRestrictions: null
     resources:
     - nodes/metrics
+    - nodes/spec
     verbs:
     - get
   - apiGroups:
@@ -2076,6 +2169,8 @@ items:
   - apiGroups: null
     attributeRestrictions: null
     nonResourceURLs:
+    - /.well-known
+    - /.well-known/*
     - /api
     - /api/*
     - /apis
@@ -2164,6 +2259,7 @@ items:
     resources:
     - localresourceaccessreviews
     - localsubjectaccessreviews
+    - subjectrulesreviews
     verbs:
     - create
   - apiGroups:
@@ -2703,6 +2799,7 @@ items:
     - jobs
     - scheduledjobs
     verbs:
+    - get
     - list
     - watch
   - apiGroups:
@@ -2985,6 +3082,14 @@ items:
     resources:
     - events
     verbs:
+    - list
+    - watch
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
+    - events
+    verbs:
     - create
     - patch
     - update
@@ -2994,8 +3099,26 @@ items:
     resources:
     - storageclasses
     verbs:
+    - get
     - list
     - watch
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
+    - endpoints
+    - services
+    verbs:
+    - create
+    - delete
+    - get
+  - apiGroups:
+    - ""
+    attributeRestrictions: null
+    resources:
+    - secrets
+    verbs:
+    - get
 - apiVersion: v1
   kind: ClusterRole
   metadata:

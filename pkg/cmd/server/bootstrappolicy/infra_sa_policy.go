@@ -331,9 +331,10 @@ func init() {
 			Rules: []authorizationapi.PolicyRule{
 				// JobController.jobController.ListWatch
 				// ScheduledJobController.SyncAll
+				// ScheduledJobController.SyncOne
 				{
 					APIGroups: []string{extensions.GroupName, batch.GroupName},
-					Verbs:     sets.NewString("list", "watch"),
+					Verbs:     sets.NewString("get", "list", "watch"),
 					Resources: sets.NewString("jobs", "scheduledjobs"),
 				},
 				// JobController.syncJob
@@ -576,16 +577,32 @@ func init() {
 					Verbs:     sets.NewString("get", "create", "delete"),
 					Resources: sets.NewString("pods"),
 				},
+				// RecycleVolumeByWatchingPodUntilCompletion
+				{
+					Verbs:     sets.NewString("list", "watch"),
+					Resources: sets.NewString("events"),
+				},
 				// PersistentVolumeRecycler.reclaimVolume() -> handleRecycle()
 				{
 					Verbs:     sets.NewString("create", "update", "patch"),
 					Resources: sets.NewString("events"),
 				},
 				// PersistentVolumeBinder.findProvisionablePlugin()
+				// Glusterfs provisioner
 				{
 					APIGroups: []string{storage.GroupName},
-					Verbs:     sets.NewString("list", "watch"),
+					Verbs:     sets.NewString("list", "watch", "get"),
 					Resources: sets.NewString("storageclasses"),
+				},
+				// Glusterfs provisioner
+				{
+					Verbs:     sets.NewString("get", "create", "delete"),
+					Resources: sets.NewString("services", "endpoints"),
+				},
+				// Glusterfs & Ceph provisioner
+				{
+					Verbs:     sets.NewString("get"),
+					Resources: sets.NewString("secrets"),
 				},
 			},
 		},
